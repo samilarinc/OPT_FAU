@@ -52,7 +52,7 @@ import numpy as np
 
 def matrnr():
     # set your matriculation number here
-    matrnr = 0
+    matrnr = 23062971
     return matrnr
 
 
@@ -75,7 +75,22 @@ def incompleteCholesky(A: np.array, alpha=1.0e-3, delta=1.0e-6, verbose=0):
     if verbose:
         print('Start incompleteCholesky...')
 
-    MISSING CODE
+    for k in range(n):
+        L[k, k] = np.sqrt(np.max((L[k, k], alpha)))
+        for i in range(k+1, n):
+            if np.abs(L[i, k]) > delta:
+                L[i, k] = L[i, k] / L[k, k]
+            else:
+                L[i, k] = 0
+        
+        for j in range(k+1, n):
+            for i in range(j, n):
+                if np.abs(L[i, j]) > delta:
+                    L[i, j] = L[i, j] - L[i, k] * L[j, k]
+        
+    for i in range(n):
+        for j in range(i+1, n):
+            L[i,j] = 0
 
     if verbose:
         residualmatrix = A - L @ L.T
