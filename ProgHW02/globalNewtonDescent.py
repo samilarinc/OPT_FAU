@@ -75,14 +75,13 @@ def globalNewtonDescent(f, x0: np.array, eps=1.0e-3, verbose=0):
     while f_grad_norm > eps:
         Bk = f_hess 
         dk = PCG.PrecCGSolver(Bk, -f_grad)
-        if f_grad.T.dot(dk)[0, 0] > 0:
-            dk = -f_grad 
+        if (f_grad.T @ dk).item((0, 0)) > 0:
+            dk = -f_grad
         tk = WP.WolfePowellSearch(f, x, dk)
         x = x + tk * dk
         update(x)
         Bk = f_hess
         countIter = countIter + 1
-
 
     if verbose:
         gradx = f.gradient(x)

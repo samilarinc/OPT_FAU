@@ -81,19 +81,19 @@ def WolfePowellSearch(f, x: np.array, d: np.array, sigma=1.0e-3, rho=1.0e-2, ver
         print('Start WolfePowellSearch...')
 
     t = 1
-    W1, W2, fx_plus_t, gradx_plus_t, decent_plus_t = 0, 0, 0, 0, 0
+    W1, W2, fx_plus_td, gradx_plus_td, decent_plus_td = 0, 0, 0, 0, 0
     def update(t):
-        nonlocal x, fx, gradx, descent, W1, W2, fx_plus_t, gradx_plus_t, decent_plus_t
+        nonlocal x, fx, gradx, descent, W1, W2, fx_plus_td, gradx_plus_td, decent_plus_td
         fx = f.objective(x)
         gradx = f.gradient(x)
         descent = gradx.T @ d
 
-        fx_plus_t = f.objective(x + t * d)
-        gradx_plus_t = f.gradient(x + t * d)
-        descent_plus_t = gradx_plus_t.T @ d
+        fx_plus_td = f.objective(x + t * d)
+        gradx_plus_td = f.gradient(x + t * d)
+        descent_plus_td = gradx_plus_td.T @ d
 
-        W1 = fx_plus_t <= fx + t * sigma * descent
-        W2 = descent_plus_t >= rho * descent
+        W1 = fx_plus_td <= fx + t * sigma * descent
+        W2 = descent_plus_td >= rho * descent
 
     update(t)
 
