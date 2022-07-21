@@ -65,8 +65,9 @@ class leastSquaresObjective:
 
     def jacobian(self, p: np.array):
         self.model.setParameters(p)
-        myJacobian = np.zeros((self.N, p.shape[0]))
-
-        raise NotImplementedError
-
-        return myJacobian
+        myJacobian = np.zeros((self.N, p.shape[0], 1))
+        data = self.xData.T[:, :, np.newaxis]
+        
+        for k in range(self.N):
+            myJacobian[k] = self.model.parameterGradient(data[k])
+        return myJacobian[:, :, 0]

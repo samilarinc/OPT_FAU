@@ -66,13 +66,30 @@ def levenbergMarquardtDescent(R, p0: np.array, eps=1.0e-4, alpha0=1.0e-3, beta=1
         print('Start levenbergMarquardtDescent...')
 
     countIter = 0
-    # p = MISSING
+    p = p0
+    alpha = alpha0
+    N = p.shape[0]
 
+    def update(p):
+        jacob_loc = R.jacobian(p)
+        resid_loc = R.residual(p)
+        return jacob_loc, resid_loc
 
+    jacob, resid = update(p)
 
-    # while MISSING STATEMENT:
-        # MISSING CODE
-
+    while np.linalg.norm(jacob.T@resid) > eps:
+        d = PCG.PrecCGSolver((jacob.T@jacob)+(alpha*np.eye(N)), -jacob.T@resid)
+        p_new = p + d
+        jacob_new, resid_new = update(p_new)
+        if 0.5*resid_new.T@resid_new < 0.5*resid.T@resid:
+            p = p_new
+            jacob = jacob_new
+            resid = resid_new
+            alpha = alpha0
+        else:
+            alpha = alpha*beta
+        countIter += 1
+        
     if verbose:
         print('levenbergMarquardtDescent terminated after ', countIter, ' steps')
 
