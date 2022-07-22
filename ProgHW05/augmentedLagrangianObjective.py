@@ -41,7 +41,7 @@ import numpy as np
 
 def matrnr():
     # set your matriculation number here
-    matrnr = 0
+    matrnr = 23062971
     return matrnr
 
 
@@ -57,19 +57,25 @@ class augmentedLagrangianObjective:
         self.gamma = gamma
 
     def objective(self, x: np.array):
-
-        myObjective = MISSING
+        f_res = self.f.objective(x)
+        h_res = self.h.objective(x)
+        myObjective = f_res + self.alpha*h_res + 0.5*self.gamma*(h_res**2)
 
         return myObjective
 
     def gradient(self, x: np.array):
-
-        myGradient = MISSING
+        f_grad = self.f.gradient(x)
+        h_grad = self.h.gradient(x)
+        h_res = self.h.objective(x)
+        myGradient = f_grad + self.alpha*h_grad + self.gamma*(h_res*h_grad)
 
         return myGradient
 
     def hessian(self, x: np.array):
-
-        myHessian = MISSING
+        f_hess = self.f.hessian(x)
+        h_res = self.h.objective(x)
+        h_grad = self.h.gradient(x)
+        h_hess = self.h.hessian(x)
+        myHessian = f_hess + self.alpha*h_hess + self.gamma*(h_res*h_hess + h_grad@h_grad.T)
 
         return myHessian
