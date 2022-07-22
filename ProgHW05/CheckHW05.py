@@ -82,7 +82,7 @@ D = np.array([[2, 0, 0], [0, 2, 0], [0, 0, 2]], dtype=float)
 E = np.array([[-8], [0], [0]], dtype=float)
 F = 7
 myConstraint = QO.quadraticObjective(D, E, F)
-x0 = np.array([[-8], [-4], [-1]], dtype=float)
+x0 = np.array([[4], [-2], [0]], dtype=float)
 alpha0 = 0
 eps = 1.0e-3
 delta = 1.0e-6

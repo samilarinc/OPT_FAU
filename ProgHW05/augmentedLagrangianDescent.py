@@ -85,11 +85,12 @@ def augmentedLagrangianDescent(f, P, h, x0: np.array, alpha0=0, eps=1.0e-3, delt
     deltak = 1 / pow(gammak, 0.1)
     hk = h.objective(xk)
     Ak = AO.augmentedLagrangianObjective(f, h, alphak, gammak)
-    A_val, A_grad = Ak.objective(xk), Ak.gradient(xk)
+    A_grad = Ak.gradient(xk)
 
     while np.linalg.norm(xk - P.project(xk-A_grad)) > eps or np.linalg.norm(hk) > delta:
-        x_min = PD.projectedNewtonDescent(f, P, xk, epsk)
+        x_min = PD.projectedNewtonDescent(Ak, P, xk, epsk)
         xk = x_min
+        A_grad = Ak.gradient(xk)
         hk = h.objective(xk)
         if np.linalg.norm(hk) <= deltak:
             alphak = alphak + gammak * hk
@@ -100,10 +101,8 @@ def augmentedLagrangianDescent(f, P, h, x0: np.array, alpha0=0, eps=1.0e-3, delt
             epsk = 1 / gammak
             deltak = 1 / pow(gammak, 0.1)
         Ak = AO.augmentedLagrangianObjective(f, h, alphak, gammak)
-        x_min = PD.projectedNewtonDescent(f, P, xk, epsk)
-        xk = x_min
-        hk = h.objective(xk)
-        A_val, A_grad = Ak.objective(xk), Ak.gradient(xk)
+        A_grad = Ak.gradient(xk)
+        
         countIter = countIter + 1
 
     if verbose:
